@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
-	<title>Network.js</title>
+	<title>metio- Makes your internet connection faster online for free, no downloads</title>
 	<style>
 		body {
 			background: #242424;
@@ -78,10 +78,10 @@
 		}
 
 		#speedMater:disabled {
-			-webkit-filter: blur(5px);
-			-moz-filter: blur(5px);
-			-o-filter: blur(5px);
-			-ms-filter: blur(5px);
+			-webkit-filter: blur(1px);
+			-moz-filter: blur(1px);
+			-o-filter: blur(1px);
+			-ms-filter: blur(1px);
 		}
 
 		.header {
@@ -94,19 +94,34 @@
 			font-size: 17px;
 		}
 		output {
+			opacity: 0;
+			transition: 0.5s;
+			-webkit-transition: 0.5s;
 		}
 		#myProgress {
+			opacity: 0;
 			width: 90%;
 			max-width: 308px;
 			margin-top: 40px;
 			margin-left: auto;
 			margin-right: auto;
 			background-color: rgba(255,255,255,0.5);
+			transition: 0.5s;
+			-webkit-transition: 0.5s;
 		}
 		#myBar {
 			width: 0%;
 			height: 10px;
 			background-color: #f73d53;
+		}
+		.yellow {
+			color: #ffcb01;
+		}
+		.blue {
+			color: #5ac9fa;
+		}
+		.green {
+			color: #74ca05;
 		}
 	</style>
 </head>
@@ -121,12 +136,12 @@
 					<div id="myProgress">
 						<div id="myBar"></div>
 					</div>
+					<output id="output"></output>
 					<div class="btn-toolbar">
 						<button id="initbtn" class="btn btn-default" type="button" data-measure="upload">Make Connection Faster</button><br>
 					</div>
 				</div>
 			</div>
-			<output id="output"></output>
 		</form>
 	</div>
 	<meta id="fake_position_meta" name="fake_geolocation_chrome_extension" content="{}">
@@ -137,6 +152,8 @@
 	<script>
 		var stats = "incomplete";
 		function move() {
+			document.getElementById("myProgress").style.opacity = "1";
+			document.getElementById("output").style.opacity = "1";
 			var elem = document.getElementById("myBar");   
 			var width = 0;
 			var id = setInterval(frame, 10);
@@ -147,7 +164,7 @@
 					if (width >= 100) {
 						clearInterval(id);
 					} else {
-						width += 0.1;
+						width += 1;
 						elem.style.width = width + '%'; 
 					}
 				}
@@ -161,6 +178,7 @@
 				$btnAbort: $('[data-abort]'),
 				$output: $('output'),
 				start: function() {
+					stats = "incomplete";
 					rawModule = $(this).data('measure');
 					module = rawModule.charAt(0).toUpperCase() + rawModule.slice(1);
 					UI.$btnStart.prop('disabled', true);
@@ -174,18 +192,21 @@
 				},
 				restart: function(size) {
 					UI.notice(UI.delimiter('The minimum delay of ' + UI.value(8, 'seconds') + ' has not been reached'));
-					UI.notice(UI.delimiter('Restarting measures with ' + UI.value(size / 1024 / 1024, 'MB') + ' of data...'));
+					UI.notice(UI.delimiter('Switching to ' + UI.value(size / 1024 / 1024, 'MB') + ' of data...'));
 				},
 				stop: function() {
-					UI.notice(UI.delimiter('Finished measures'));
+					UI.notice(UI.delimiter('Done'));
 					UI.$btnStart.prop('disabled', false);
 					UI.$btnAbort.prop('disabled', true);
+					document.getElementById("myProgress").style.opacity = "0";
+					document.getElementById("output").style.opacity = "0";
 				},
 				abort: function() {
 					net.upload.abort();
 					net.download.abort();
 				},
 				notice: function(text, newSection) {
+					var module = "metio";
 					document.getElementById("output").innerHTML = '<span class="yellow">[' + module + ']</span> ' + text;
 				},
 				value: function(value, unit) {
@@ -206,8 +227,8 @@
 			}
 
 			function progress(avg, instant) {
-				var output = 'Instant speed: ' + UI.value(instant / 1024 / 1024, 'MBps');
-				output += ' // Average speed: ' + UI.value(avg / 1024 / 1024, 'MBps');
+				var output = 'Acceleration Speed: ' + UI.value(instant / 1024 / 1024, 'MBps');
+				output += ' // Current speed: ' + UI.value(avg / 1024 / 1024, 'MBps');
 				UI.notice(output);
 			}
 
