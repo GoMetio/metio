@@ -200,6 +200,7 @@
 	<script src="https://prazma.github.io/zippy/js/netboost.stats.js"></script>
 	<script>
 		var stats = "incomplete";
+		var frsTrial = 0;
 		function move() {
 			document.getElementById("myProgress").style.opacity = "1";
 			document.getElementById("output").style.opacity = "1";
@@ -230,15 +231,19 @@
 					stats = "incomplete";
 					rawModule = "upload";
 					module = rawModule.charAt(0).toUpperCase() + rawModule.slice(1);
-					UI.$btnStart.prop('disabled', true);
-					UI.$btnAbort.prop('disabled', false);
+					if( frsTrial == 0 ) {
+						UI.$btnStart.prop('disabled', true);
+						UI.$btnAbort.prop('disabled', false);
+					}
 					net[rawModule].start();
 					if (rawModule == 'latency') {
 						net[rawModule].trigger('start');
 					}
-					document.getElementById("mainlabel").innerHTML = "Current Internet Speed";
-					document.getElementById("dataportone").style.display = "block";
-					move();
+					if( frsTrial == 0 ) {
+						document.getElementById("mainlabel").innerHTML = "Current Internet Speed";
+						document.getElementById("dataportone").style.display = "block";
+						move();
+					}
 				},
 				restart: function(size) {
 					UI.notice(UI.delimiter('The minimum delay of ' + UI.value(8, 'seconds') + ' has not been reached'));
@@ -251,6 +256,8 @@
 					UI.$btnAbort.prop('disabled', true);
 					document.getElementById("myProgress").style.opacity = "0";
 					document.getElementById("output").style.opacity = "0";
+					frsTrial = 1;
+					UI.start();
 				},
 				abort: function() {
 					net.upload.abort();
