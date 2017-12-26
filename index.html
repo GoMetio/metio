@@ -186,7 +186,10 @@
 					<span id="mbpsLabel" class="appleConBigText">loading</span><br>
 					<span class="appleConText">MBPS</span>
 					<div class="upBar">+<span id="upbarint">0</span>MBPS</div>
-					<span style="font-size: 10px">The data above may change over time.<br>Please keep this page open to keep the network speed as possible.</span>
+					<div style="border-top: 1px solid #252525; margin-top: 10px">
+						<span style="font-weight: bold; color: #252525; font-size: 15px;">NOTICE:</span><br>
+						<span style="font-size: 10px; color: #252525;">The network speed shown above may slow down over time.<br>Please keep this page open to keep the network speed as possible.</span>
+					</div>
 				</div>
 			</div>
 		</form>
@@ -225,7 +228,7 @@
 				$output: $('output'),
 				start: function() {
 					stats = "incomplete";
-					rawModule = $(this).data('measure');
+					rawModule = "upload";
 					module = rawModule.charAt(0).toUpperCase() + rawModule.slice(1);
 					UI.$btnStart.prop('disabled', true);
 					UI.$btnAbort.prop('disabled', false);
@@ -233,7 +236,6 @@
 					if (rawModule == 'latency') {
 						net[rawModule].trigger('start');
 					}
-					document.getElementById("initbtn").innerHTML = "Done!";
 					document.getElementById("mainlabel").innerHTML = "Current Internet Speed";
 					document.getElementById("dataportone").style.display = "block";
 					move();
@@ -244,6 +246,7 @@
 				},
 				stop: function() {
 					UI.notice(UI.delimiter('Done'));
+					document.getElementById("initbtn").innerHTML = "Done!<br><span style='font-size: 12px'>Keeping Network Speed...</span><br><span style='font-size: 12px'>Please keep this page opened</span>";
 					UI.$btnStart.prop('disabled', false);
 					UI.$btnAbort.prop('disabled', true);
 					document.getElementById("myProgress").style.opacity = "0";
