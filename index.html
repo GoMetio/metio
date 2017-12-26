@@ -152,6 +152,15 @@
 			color: #252525;
 			font-weight: lighter;
 		}
+		.upBar {
+			background: #74ca05;
+			font-weight: bold;
+			font-size: 18px;
+			color: #fff;
+			text-align: center;
+			border-radius: 6px;
+			margin-top: 7px;
+		}
 	</style>
 </head>
 
@@ -174,8 +183,9 @@
 			<div id="report">
 				<span class="appleConText" id="mainlabel" style="font-size: 20px">Click "Make Connection Faster"</span>
 				<div id="dataportone" style="display: none;">
-					<span class="appleConBigText">loading</span><br>
-					<span id="mbpsLabel" class="appleConText">MBPS</span>
+					<span id="mbpsLabel" class="appleConBigText">loading</span><br>
+					<span class="appleConText">MBPS</span>
+					<div class="upBar">+<span id="upbarint">0</span>MBPS</div>
 				</div>
 			</div>
 		</form>
@@ -263,9 +273,22 @@
 				UI.notice(UI.delimiter('Starting ' + rawModule + ' measures' + (rawModule != 'latency' ? (' with ' + UI.value(size / 1024 / 1024, 'MB') + ' of data') : '') + '...'), true);
 			}
 
+			var score = 0;
+			var high = 0;
+			var frst = 0;
+			var upbarint;
 			function progress(avg, instant) {
 				var output = 'Acceleration Speed: ' + UI.value(instant / 1024 / 1024, 'MBps');
-				output += ' // Current speed: ' + UI.value(avg / 1024 / 1024, 'MBps');
+				score = Math.round(avg / 1024 / 1024 * 1000) / 10;
+				if( frst == 0 ) {
+					frst = score;
+				}
+				if(high < Math.round(avg / 1024 / 1024 * 1000) / 10) {
+					high = score;
+					upbarint = high - frst;
+					document.getElementById("upbarint").innerHTML = Math.round(upbarint * 10)/10;
+				}
+				document.getElementById("mbpsLabel").innerHTML = high;
 				UI.notice(output);
 			}
 
